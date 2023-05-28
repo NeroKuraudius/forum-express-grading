@@ -47,7 +47,7 @@ const adminController = {
       const restaurant = await Restaurant.findByPk(id, {
         raw: true, // 只有單筆資料時這段可省略，
         nest: true, // 渲染時用 { restaurant: restaurant.toJSON() } 效果相同
-        include: [Category]
+        include: Category
       })
       if (!restaurant) throw new Error("Restaurant didn't exist.")
       res.render('admin/restaurant', { restaurant })

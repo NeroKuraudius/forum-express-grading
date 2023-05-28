@@ -1,56 +1,195 @@
 {{!-- 使用者基本資料 --}}
-<div class="row m-3" style="border:1px solid lightgray;">
-  <div class="col-md-12">
-  </div>
-  {{!-- 大頭照 --}}
-  <div class="col-md-5 mt-3">
-    <img class="img-responsive center-block mb-5" src="{{user.image}}"
-      style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
-  </div>
-  {{!-- 姓名與編輯按鈕 --}}
-  <div class="col-md-7 mt-3">
-    <h3><strong>{{user.name}}</strong></h3>
-    <h4>{{user.email}}</h4>
+<div class="card mt-5">
+  <div class="row m-2">
+    <div class="col-md-12" style="display:flex">
+      {{!-- 大頭照 --}}
+      <div class="col-md-5 mt-3">
+        <img class="img-responsive center-block mb-5" src="{{user.image}}"
+          style="width: 250px; transition: opacity 0.5s; opacity:0;" onload="this.style.opacity=1;">
+      </div>
+      {{!-- 姓名與其他互動資訊 --}}
+      <div class="col-md-7 mt-3">
+        <h3><strong>{{user.name}}</strong></h3>
+        <h4>{{user.email}}</h4>
+        <h6>
+          <strong>
+            {{#ifCond user.Comments.length 0 }}
+            0
+            {{else}}
+            {{user.Comments.length}}
+            {{/ifCond}}
+          </strong>
+          間已評論餐廳
+        </h6>
+        <h6>
+          <strong>
+            {{#ifCond user.FavoritedRestaurants.length 0 }}
+            0
+            {{else}}
+            {{user.FavoritedRestaurants.length}}
+            {{/ifCond}}
+          </strong>
+          間已收藏餐廳
+        </h6>
+        <h6>
+          <strong>
+            {{#ifCond user.Followings.length 0 }}
+            0
+            {{else}}
+            {{user.Followings.length}}
+            {{/ifCond}}
+          </strong>
+          位followings (追蹤者)
+        </h6>
+        <h6>
+          <strong>
+            {{#ifCond user.Followers.length 0 }}
+            0
+            {{else}}
+            {{user.Followers.length}}
+            {{/ifCond}}
+          </strong>
+          位followers (追隨者)
+        </h6>
+        <br />
+        {{!-- 按鈕 --}}
+        {{#ifCond userId user.id}}
+        <form action="/users/{{user.id}}/edit" method="GET" style="display: contents;">
+          <button type="submit" class="btn btn-primary" href="">edit</button>
+        </form>
+        {{else}}
+        {{#if isFollowed }}
+        <form action="/following/{{user.id}}?_method=DELETE" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-danger">取消追蹤</button>
+        </form>
+        {{else}}
+        <form action="/following/{{user.id}}" method="POST" style="display: contents;">
+          <button type="submit" class="btn btn-primary">追蹤</button>
+        </form>
+        {{/if}}
+        {{/ifCond}}
 
-    <h5>
-      評論餐廳數：
-      {{#ifCond comments.count 0 }}
-      0
-      {{else}}
-      {{comments.count}}
-      {{/ifCond}}
-    </h5>
-    {{#ifCond userId user.id}}
-    <button type="button" class="btn mt-5">
-      <a class="btn btn-primary" href="/users/{{user.id}}/edit">
-        edit
-      </a>
-    </button>
-    {{/ifCond}}
+
+      </div>
+    </div>
   </div>
 </div>
 
-{{!-- 使用者已評論餐廳 --}}
-<div class="row mt-3" style="border:1px solid lightgray;">
-  <h6 class="mt-3">
-    {{#ifCond comments.count 0 }}
-    0
-    {{else}}
-    {{comments.count}}
-    {{/ifCond}}
-    間已評論餐廳
-  </h6>
-  <br />
-  <br />
-  <div class="container p" style="">
-    <div class="col-md-12 ps-4 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
-      {{#each comments.rows}}
-      <div class="m-1">
-        <a href="/restaurants/{{this.Restaurant.id}}">
-          <img src="{{this.Restaurant.image}}" width="80" height="80">
-        </a>
+<div class="card-container mt-5">
+  <div class="col-md-12" style="display:flex">
+    {{!-- followship list --}}
+    <div class="col-md-5 followship-container">
+      <div class="followings">
+        <div class="card me-1">
+          <div class="row">
+            <h6 class="mt-3">
+              &nbsp;
+              &nbsp;
+              {{user.Followers.length}}
+              位followings(追蹤者)
+              <hr />
+            </h6>
+            <br />
+            <div class="img-container">
+              <div class="col-md-5 ps-2 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
+                {{#each user.Followers}}
+                <div class="m-1">
+                  <a href="/users/{{this.id}}">
+                    <img src="{{this.image}}" width="40" height="40">
+                  </a>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      {{/each}}
+      <div class="followers mt-3">
+        <div class="card me-1">
+          <div class="row">
+            <h6 class="mt-3">
+              &nbsp;
+              &nbsp;
+              {{user.Followings.length}}
+              位followers(跟隨者)
+              <hr />
+            </h6>
+            <br />
+            <div class="img-container">
+              <div class="col-md-5 ps-2 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
+                {{#each user.Followings}}
+                <div class="m-1">
+                  <a href="/users/{{this.id}}">
+                    <img src="{{this.image}}" width="40" height="40">
+                  </a>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- comments & favorites list --}}
+    <div class="col-md-7 restaurants-container">
+      <div class="commented-restaurants ms-1">
+        <div class="card ms-1">
+          <div class="row">
+            <h6 class="mt-3">
+              &nbsp;
+              &nbsp;
+              {{#ifCond user.Comments.length 0 }}
+              0
+              {{else}}
+              {{user.Comments.length}}
+              {{/ifCond}}
+              間已評論餐廳
+              <hr />
+            </h6>
+            <div class="img-container">
+              <div class="ps-4 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
+                {{#each user.Comments}}
+                <div class="m-1">
+                  <a href="/restaurants/{{this.Restaurant.id}}">
+                    <img src="{{this.Restaurant.image}}" width="60" height="60">
+                  </a>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="favorited-restaurants mt-3 ms-1">
+        <div class="card ms-1">
+          <div class="row">
+            <h6 class="mt-3">
+              &nbsp;
+              &nbsp;
+              {{#ifCond user.FavoritedRestaurants.length 0 }}
+              0
+              {{else}}
+              {{user.FavoritedRestaurants.length}}
+              {{/ifCond}}
+              間已收藏餐廳
+              <hr />
+            </h6>
+            <br />
+            <div class="img-container">
+              <div class="ps-4 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
+                {{#each user.FavoritedRestaurants}}
+                <div class="m-1">
+                  <a href="/restaurants/{{this.id}}">
+                    <img src="{{this.image}}" width="60" height="60">
+                  </a>
+                </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
