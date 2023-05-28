@@ -97,7 +97,10 @@ const userController = {
       return res.redirect(`/users/${id}`)
     }
     const { name } = req.body
-    if (!name) throw new Error('User name is required!')
+    if (!name || name.length === 0) {
+      req.flash('error_messages', 'User name is required!')
+      return res.redirect('/users/userId/edit')
+    }
     const { file } = req
     try {
       const [user, filePath] = await Promise.all([User.findByPk(id), imgurFileHandler(file)])
@@ -181,7 +184,10 @@ const userController = {
   addFollowing: async (req, res, next) => {
     const { id } = req.user
     const { userId } = req.params
-    if (id === Number(userId)) throw new Error("You cann't follow yourself!")
+    if (id === Number(userId)) {
+      req.flash('error_messages', "You can't follow yourself!")
+      return res.redirect('/users/top')
+    }
     try {
       const user = await User.findByPk(userId)
       if (!user) throw new Error("User didn't exist!")

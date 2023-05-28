@@ -42,6 +42,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')))
 // res.locals參數設定
 app.use((req, res, next) => {
   res.locals.success_messages = req.flash('success_messages')
+  res.locals.warning_messages = req.flash('warning_messages')
   res.locals.error_messages = req.flash('error_messages')
   res.locals.loginUser = helpers.getUser(req)
   next()
