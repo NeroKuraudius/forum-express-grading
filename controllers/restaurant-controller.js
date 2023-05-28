@@ -67,11 +67,11 @@ const restaurantController = {
   getDashboard: async (req, res, next) => {
     const { id } = req.params
     try {
-      const restaurant = await Restaurant.findByPk(id, { include: [Category, { model: Comment }] })
+      const restaurant = await Restaurant.findByPk(id, { include: [Category, { model: Comment }, { model: User, as: 'FavoritedUsers' }] })
       if (!restaurant) throw new Error("Restaurant didn't exist!")
       const totalComments = restaurant.Comments?.length || 0
-      // console.log(totalComments)
-      return res.render('dashboard', { restaurant: restaurant.toJSON(), totalComments })
+      const totalFavorites = restaurant.FavoritedUsers?.length || 0
+      return res.render('dashboard', { restaurant: restaurant.toJSON(), totalComments, totalFavorites })
     } catch (e) {
       next(e)
     }

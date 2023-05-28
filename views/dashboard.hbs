@@ -18,7 +18,16 @@
             {{/ifCond}}
           </strong>
         </li>
-        <li><strong>收藏數：</strong> -</li>
+        <li>
+          <strong>
+            收藏數：
+            {{#ifCond totalFavorites 0}}
+            0
+            {{else}}
+            {{totalFavorites}}
+            {{/ifCond}}
+          </strong>
+        </li>
       </ul>
     </div>
   </div>

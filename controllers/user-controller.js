@@ -57,17 +57,17 @@ const userController = {
     const userId = req.user?.id || id // number
     try {
       const user = await User.findByPk(id, {
-        raw: true,
-        nest: true
+        nest: true,
+        include: [
+          { model: Comment, include: Restaurant },
+          { model: User, as: 'Followings' },
+          { model: User, as: 'Followers' },
+          { model: Restaurant, as: 'FavoritedRestaurants' }]
       })
       if (!user) throw new Error("User didn't exist!")
-      const comments = await Comment.findAndCountAll({
-        raw: true,
-        nest: true,
-        where: { userId: id },
-        include: Restaurant
-      })
-      return res.render('users/profile', { user, userId, comments })
+      const result = user.toJSON()
+      const isFollowed = result.Followers.some(f => f.id === userId)
+      return res.render('users/profile', { user: result, userId, isFollowed })
     } catch (e) {
       next(e)
     }
