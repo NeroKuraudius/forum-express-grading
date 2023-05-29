@@ -13,10 +13,10 @@
         <h4>{{user.email}}</h4>
         <h6>
           <strong>
-            {{#ifCond user.Comments.length 0 }}
+            {{#ifCond comments.length 0 }}
             0
             {{else}}
-            {{user.Comments.length}}
+            {{comments.length}}
             {{/ifCond}}
           </strong>
           間已評論餐廳
@@ -139,19 +139,19 @@
             <h6 class="mt-3">
               &nbsp;
               &nbsp;
-              {{#ifCond user.Comments.length 0 }}
+              {{#ifCond comments.length 0 }}
               0
               {{else}}
-              {{user.Comments.length}}
+              {{comments.length}}
               {{/ifCond}}
               間已評論餐廳
               <hr />
             </h6>
             <div class="img-container">
               <div class="ps-4 mb-3" style="display:flex;flex-wrap:wrap;justify-content:flex-start">
-                {{#each user.Comments}}
+                {{#each comments}}
                 <div class="m-1">
-                  <a href="/restaurants/{{this.Restaurant.id}}">
+                  <a href="/restaurants/{{this.restaurantId}}">
                     <img src="{{this.Restaurant.image}}" width="60" height="60">
                   </a>
                 </div>
