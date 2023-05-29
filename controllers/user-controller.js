@@ -59,23 +59,22 @@ const userController = {
       const comments = await Comment.findAll({
         raw: true,
         nest: true,
-        attributes: ['restaurantId'], // 等於SQL與法中的SELECT
         where: { userId: id },
+        attributes: ['restaurantId'], // 等於SQL與法中的SELECT
         group: ['restaurantId'],
         include: Restaurant
       })
-      console.log(comments)
       const user = await User.findByPk(id, {
         nest: true,
         include: [
-          { model: Comment, include: Restaurant },
           { model: User, as: 'Followings' },
           { model: User, as: 'Followers' },
           { model: Restaurant, as: 'FavoritedRestaurants' }]
       })
       if (!user) throw new Error("User didn't exist!")
       const result = user.toJSON()
-      const isFollowed = result.Followers.some(f => f.id === userId)
+      console.log(result.Followers)
+      const isFollowed = await result.Followers.some(f => f.id === Number(userId))
       return res.render('users/profile', { user: result, comments, userId, isFollowed })
     } catch (e) {
       next(e)
